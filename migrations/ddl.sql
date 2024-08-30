@@ -5,7 +5,7 @@ CREATE TABLE users
     email          VARCHAR(50) UNIQUE NOT NULL,
     username       VARCHAR(50) UNIQUE NOT NULL,
     password       VARCHAR(100)        NOT NULL,
-    jwt_token      VARCHAR(100),
+    jwt_token      TEXT,
     deposit_amount DECIMAL(10, 2) DEFAULT 0,
     created_at     TIMESTAMP      DEFAULT CURRENT_TIMESTAMP,
     updated_at     TIMESTAMP      DEFAULT CURRENT_TIMESTAMP
