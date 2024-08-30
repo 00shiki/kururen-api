@@ -2,7 +2,7 @@
 
 ### Project Description
 
-Car Rental API
+Car Rental API with mail and payment gateway integration.
 
 ### ERD
 ![erd](./ERD.png)
@@ -26,6 +26,7 @@ Car Rental API
   - jwt
   - response
   - xendit
+  - mail
 - repository
   - cars
   - rentals
@@ -43,6 +44,8 @@ Car Rental API
 - JWT
 - Heroku
 - Docker
+- Xendit
+- Gomail
 
 ### How to run
 1. create copy `.env.example` into `.env` and fill in the project config
