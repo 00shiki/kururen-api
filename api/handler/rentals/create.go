@@ -82,7 +82,7 @@ func (handler *Controller) Create(c echo.Context) error {
 		return response.HandleResponse(c, &result)
 	}
 
-	duration := endDate.Sub(startDate).Hours() / 24
+	duration := endDate.Sub(startDate).Hours()/24 + 1
 
 	var totalCost float64
 	cars := make([]*entity.Car, len(payload.Cars))
