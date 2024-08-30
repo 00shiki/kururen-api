@@ -162,8 +162,8 @@ func TestRegister(t *testing.T) {
 				t.Errorf("CreateUser() = %v, want %v", errCreate, tt.want.errCreate)
 			}
 
-			mailService.On("SendMail", mock.Anything, mock.Anything, mock.Anything).Return(tt.want.errSend)
-			errSend := mailService.SendMail(tt.user.Email, "", "")
+			mailService.On("SendMail", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(tt.want.errSend)
+			errSend := mailService.SendMail(tt.user.Email, tt.user.Name, "", "")
 			if !reflect.DeepEqual(errSend, tt.want.errSend) {
 				t.Errorf("SendMail() = %v, want %v", errSend, tt.want.errSend)
 			}
