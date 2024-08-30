@@ -296,7 +296,7 @@ paths:
       - BearerAuth: []
       summary: List Rental Histories
       tags:
-      - Cars
+      - Rentals
     post:
       consumes:
       - application/json

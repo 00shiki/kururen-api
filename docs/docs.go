@@ -243,7 +243,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cars"
+                    "Rentals"
                 ],
                 "summary": "List Rental Histories",
                 "responses": {
