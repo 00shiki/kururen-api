@@ -65,7 +65,7 @@ func (handler *Controller) Login(c echo.Context) error {
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenStr, errToken := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+	tokenStr, errToken := SignedString(token, []byte(os.Getenv("JWT_SECRET")))
 	if errToken != nil {
 		result := response.Response{
 			Code:    http.StatusInternalServerError,
@@ -79,7 +79,7 @@ func (handler *Controller) Login(c echo.Context) error {
 	if errUpdate != nil {
 		result := response.Response{
 			Code:    http.StatusInternalServerError,
-			Message: "Error updating user",
+			Message: errUpdate.Error(),
 		}
 		return response.HandleResponse(c, &result)
 	}

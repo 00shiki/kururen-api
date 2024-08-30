@@ -24,4 +24,5 @@ var (
 	Get              = GetID
 	ComparePassword  = bcrypt.CompareHashAndPassword
 	GeneratePassword = bcrypt.GenerateFromPassword
+	SignedString     = TokenSignedString
 )

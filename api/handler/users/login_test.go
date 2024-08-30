@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/mock"
 	"kururen/api/presentation/users"
@@ -88,6 +89,18 @@ func TestLogin(t *testing.T) {
 		{
 			name: "500#InternalServerError",
 			want: want{
+				user:     &entity.User{},
+				tokenStr: "token",
+				errToken: errors.New("internal server error"),
+			},
+			requestBody: users.LoginRequest{
+				Username: "test",
+				Password: "test",
+			},
+		},
+		{
+			name: "500#InternalServerError",
+			want: want{
 				user:      &entity.User{},
 				errUpdate: errors.New("internal server error"),
 			},
@@ -136,6 +149,12 @@ func TestLogin(t *testing.T) {
 			defer func() { ComparePassword = comparePassword }()
 			ComparePassword = func([]byte, []byte) error {
 				return tt.want.errCompare
+			}
+
+			signedString := SignedString
+			defer func() { SignedString = signedString }()
+			SignedString = func(*jwt.Token, interface{}) (string, error) {
+				return tt.want.tokenStr, tt.want.errToken
 			}
 
 			usersRepo.On("UpdateUser", mock.AnythingOfType("*entity.User")).Return(tt.want.errUpdate)
