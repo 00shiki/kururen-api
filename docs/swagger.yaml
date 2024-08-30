@@ -1,0 +1,496 @@
+basePath: /api/v1
+definitions:
+  cars.AvailabilityRequest:
+    properties:
+      status:
+        type: string
+    required:
+    - status
+    type: object
+  cars.CarResponse:
+    properties:
+      availability:
+        type: string
+      brand:
+        type: string
+      category:
+        type: string
+      color:
+        type: string
+      id:
+        type: integer
+      model:
+        type: string
+      rental_cost:
+        type: number
+      year:
+        type: string
+    type: object
+  rentals.CarRequest:
+    properties:
+      car_id:
+        type: integer
+    type: object
+  rentals.CreateRequest:
+    properties:
+      cars:
+        items:
+          $ref: '#/definitions/rentals.CarRequest'
+        type: array
+      end_date:
+        type: string
+      payment_type:
+        type: string
+      start_date:
+        type: string
+    type: object
+  rentals.CreateResponse:
+    properties:
+      invoice_url:
+        type: string
+      payment_amount:
+        type: number
+    type: object
+  rentals.RentalHistoryResponse:
+    properties:
+      cars:
+        items:
+          $ref: '#/definitions/cars.CarResponse'
+        type: array
+      end_date:
+        type: string
+      id:
+        type: integer
+      payment_amount:
+        type: number
+      payment_invoice:
+        type: string
+      start_date:
+        type: string
+    type: object
+  response.Response:
+    properties:
+      data: {}
+      message:
+        type: string
+    type: object
+  users.DetailResponse:
+    properties:
+      deposit_amount:
+        type: number
+      email:
+        type: string
+      name:
+        type: string
+      username:
+        type: string
+    type: object
+  users.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  users.LoginResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  users.RegisterRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    - username
+    type: object
+  users.TopUpRequest:
+    properties:
+      amount:
+        type: number
+    required:
+    - amount
+    type: object
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Kuruma (Car) Renting API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Kururen API
+  version: "1.0"
+paths:
+  /cars:
+    get:
+      consumes:
+      - application/json
+      description: Get Car List
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/cars.CarResponse'
+                  type: array
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerAuth: []
+      summary: List Car
+      tags:
+      - Cars
+  /cars/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get Car Detail
+      parameters:
+      - description: Car ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/cars.CarResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerAuth: []
+      summary: Detail Car
+      tags:
+      - Cars
+  /cars/{id}/availability:
+    put:
+      consumes:
+      - application/json
+      description: Change Car Availability
+      parameters:
+      - description: Car Availability Request
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/cars.AvailabilityRequest'
+      - description: Car ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerAuth: []
+      summary: Update Car Availability
+      tags:
+      - Cars
+  /rentals:
+    get:
+      consumes:
+      - application/json
+      description: Get Rental History List
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/rentals.RentalHistoryResponse'
+                  type: array
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerAuth: []
+      summary: List Rental Histories
+      tags:
+      - Cars
+    post:
+      consumes:
+      - application/json
+      description: Create new rental histories
+      parameters:
+      - description: Rentals Request
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/rentals.CreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/rentals.CreateResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerAuth: []
+      summary: Create Rentals
+      tags:
+      - Rentals
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Logged in to user account
+      parameters:
+      - description: Login Request
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/users.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/users.LoginResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Login User
+      tags:
+      - Users
+  /users/me:
+    get:
+      consumes:
+      - application/json
+      description: Get User Detail
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/users.DetailResponse'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerAuth: []
+      summary: Detail User
+      tags:
+      - Users
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      description: Registering new user
+      parameters:
+      - description: Register Request
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/users.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Register User
+      tags:
+      - Users
+  /users/topup:
+    post:
+      consumes:
+      - application/json
+      description: Add user deposit amount
+      parameters:
+      - description: Top Up Request
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/users.TopUpRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerAuth: []
+      summary: TopUp User
+      tags:
+      - Users
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
